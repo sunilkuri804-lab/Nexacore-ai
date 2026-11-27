@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexaCore AI ($NXC) — All-Chain Autonomous AI Protocol</title>
+    <script src="https://tailwindcss.com"></script>
+</head>
+<body class="bg-gray-950 text-white font-sans min-h-screen flex flex-col items-center p-4">
+    <header class="text-center my-6">
+        <span class="bg-emerald-500/20 text-emerald-400 text-xs font-bold px-3 py-1 rounded-full border border-emerald-500/30">ALL-CHAIN AI PROTOCOL • $NXC</span>
+        <h1 class="text-4xl font-extrabold mt-3 bg-gradient-to-r from-cyan-400 to-emerald-400 bg-clip-text text-transparent">NexaCore AI</h1>
+        <p class="text-gray-400 mt-1 text-xs">Scam Shield • Wallet PnL AI • Live Feed • 0.5% Auto-Burn</p>
+    </header>
+
+    <div class="w-full max-w-md flex bg-gray-900 p-1 rounded-xl border border-gray-800 mb-4">
+        <button onclick="switchMode('token')" id="tabToken" class="flex-1 py-2 text-xs font-bold rounded-lg bg-cyan-500 text-gray-950 transition">🛡️ Token Scam Check</button>
+        <button onclick="switchMode('wallet')" id="tabWallet" class="flex-1 py-2 text-xs font-bold rounded-lg text-gray-400 transition">📊 Wallet PnL AI</button>
+    </div>
+
+    <main class="w-full max-w-md bg-gray-900 border border-gray-800 rounded-2xl p-5 shadow-2xl">
+        <div class="flex justify-between items-center mb-2">
+            <label id="inputLabel" class="text-xs font-medium text-gray-300">टोकन कॉन्ट्रैक्ट एड्रेस डालें (Solana, ETH, BSC, Base):</label>
+            <span id="scanBadge" class="text-[11px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded font-semibold">1st Scan FREE</span>
+        </div>
+
+        <input id="addressInput" type="text" placeholder="उदाहरण: DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263" 
+               class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-400 mb-4">
+        
+        <button onclick="handleScan()" id="scanBtn"
+                class="w-full bg-gradient-to-r from-cyan-500 to-emerald-500 hover:opacity-90 text-gray-950 font-bold py-3 rounded-xl transition shadow-lg">
+            🔍 AI से लाइव स्कैन करें (100% फ्री)
+        </button>
+
+        <div id="paywallBox" class="mt-5 hidden bg-amber-500/10 border border-amber-500/40 rounded-xl p-4 text-center">
+            <h3 class="text-amber-400 font-bold text-sm">🔒 आपका 1 फ्री स्कैन पूरा हो गया है!</h3>
+            <p class="text-gray-300 text-xs mt-1">अनलिमिटेड फ्री स्कैन के लिए <b>$NXC</b> होल्ड करें या 0.5% फीस (₹10–₹40 के बराबर SOL/USDT/ETH/BNB) भेजें।</p>
+            <div class="mt-3 bg-gray-950 p-2.5 rounded-lg border border-gray-800 text-[11px] text-gray-400 break-all">
+                पेमेंट वॉलेट: <br><span class="text-cyan-400 font-mono">अपना_वॉलेट_एड्रेस_यहाँ_डालें</span>
+            </div>
+            <button onclick="unlockDemoScan()" class="mt-3 w-full bg-amber-500 text-gray-950 font-bold py-2 rounded-lg text-xs">
+                ✅ पेमेंट कर दिया / VIP पास से स्कैन करें
+            </button>
+        </div>
+
+        <div id="reportCard" class="mt-6 hidden bg-gradient-to-br from-gray-800 to-gray-900 border border-cyan-500/40 rounded-2xl p-4 shadow-xl">
+            <div class="flex justify-between items-center border-b border-gray-700 pb-2 mb-3">
+                <span class="text-xs font-extrabold text-cyan-400">⚡ NEXACORE AI SECURITY CARD</span>
+                <span class="text-[10px] text-gray-400">HINDI + ENGLISH</span>
+            </div>
+            <div id="resultText" class="text-xs text-gray-200 leading-relaxed whitespace-pre-wrap"></div>
+            
+            <div class="mt-4 pt-3 border-t border-gray-700 flex gap-2">
+                <button onclick="shareViral('whatsapp')" class="flex-1 bg-green-600 hover:bg-green-500 text-white text-xs font-bold py-2 rounded-lg">📲 WhatsApp शेयर</button>
+                <button onclick="shareViral('twitter')" class="flex-1 bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold py-2 rounded-lg">🐦 X पर पोस्ट करें</button>
+            </div>
+        </div>
+    </main>
+
+    <section class="w-full max-w-md mt-6 bg-gray-900/80 border border-gray-800 rounded-2xl p-4">
+        <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-emerald-400">📡 AUTONOMOUS AI LIVE FEED</span>
+            <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full">24/7 ACTIVE</span>
+        </div>
+        <p class="text-[11px] text-gray-400">AI हर घंटे नए और रिस्की कॉइन्स को लाइव स्कैन कर रहा है। ऊपर कोई भी कॉइन या वॉलेट एड्रेस डालकर तुरंत जांचें।</p>
+    </section>
+
+    <script>
+        let currentMode = 'token';
+        let lastReport = '';
+
+        function updateBadge() {
+            if (localStorage.getItem('nxc_free_used')) {
+                document.getElementById('scanBadge').innerText = 'Fee: 0.5% (₹10-₹40) / $NXC VIP';
+                document.getElementById('scanBadge').className = 'text-[11px] bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded font-semibold';
+                document.getElementById('scanBtn').innerText = '⚡ AI स्कैन अनलॉक करें (0.5% फीस)';
+            }
+        }
+        updateBadge();
+
+        function switchMode(mode) {
+            currentMode = mode;
+            document.getElementById('tabToken').className = mode === 'token' ? 'flex-1 py-2 text-xs font-bold rounded-lg bg-cyan-500 text-gray-950' : 'flex-1 py-2 text-xs font-bold rounded-lg text-gray-400';
+            document.getElementById('tabWallet').className = mode === 'wallet' ? 'flex-1 py-2 text-xs font-bold rounded-lg bg-cyan-500 text-gray-950' : 'flex-1 py-2 text-xs font-bold rounded-lg text-gray-400';
+            document.getElementById('inputLabel').innerText = mode === 'token' ? 'टोकन कॉन्ट्रैक्ट एड्रेस डालें (Solana, ETH, BSC, Base):' : 'किसी भी वॉलेट का एड्रेस डालें (Profit/Loss PnL चेक):';
+        }
+
+        async function handleScan() {
+            const address = document.getElementById('addressInput').value.trim();
+            if (!address) return alert("कृपया पहले एड्रेस डालें!");
+
+            if (localStorage.getItem('nxc_free_used')) {
+                document.getElementById('paywallBox').classList.remove('hidden');
+                return;
+            }
+            await runAIScan(address);
+        }
+
+        async function unlockDemoScan() {
+            const address = document.getElementById('addressInput').value.trim();
+            document.getElementById('paywallBox').classList.add('hidden');
+            await runAIScan(address);
+        }
+
+        async function runAIScan(address) {
+            const btn = document.getElementById('scanBtn');
+            const card = document.getElementById('reportCard');
+            const resultText = document.getElementById('resultText');
+
+            btn.innerText = "⏳ NexaCore AI लाइव डेटा जांच रहा है...";
+            btn.disabled = true;
+            card.classList.remove('hidden');
+            resultText.innerText = "ब्लॉकचेन और Gemini AI से हिंदी + अंग्रेज़ी रिपोर्ट बन रही है...";
+
+            try {
+                const res = await fetch('/api/scan', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ address, mode: currentMode })
+                });
+                const data = await res.json();
+                lastReport = data.report || data.error;
+                resultText.innerText = lastReport;
+                localStorage.setItem('nxc_free_used', 'true');
+                updateBadge();
+            } catch (e) {
+                resultText.innerText = "नेटवर्क त्रुटि। कृपया पुनः प्रयास करें।";
+            } finally {
+                btn.disabled = false;
+                updateBadge();
+            }
+        }
+
+        function shareViral(platform) {
+            const siteUrl = window.location.origin;
+            const shareText = `🚨 NexaCore AI ($NXC) लाइव रिपोर्ट:\n\n${lastReport.slice(0, 180)}...\n\nपहला स्कैन 100% फ्री करें 👇\n${siteUrl}`;
+            if (platform === 'whatsapp') {
+                window.open(`https://whatsapp.com{encodeURIComponent(shareText)}`, '_blank');
+            } else {
+                window.open(`https://twitter.com{encodeURIComponent(shareText)}`, '_blank');
+            }
+        }
+    </script>
+</body>
+</html>
